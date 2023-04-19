@@ -1,0 +1,43 @@
+name: makefile
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+      - ".github/workflows/updatecli.yml"
+      - ".github/workflows/release.yml"
+      - ".github/dependabot.yml"
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        check-latest: false
+    ## Since we're wrapping maven there is no pom file which
+    ## means that setup-java fails if you add a cache: "maven"
+    - name: Maven Cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-cache-
+    - name: Build
+      run: |
+        make build

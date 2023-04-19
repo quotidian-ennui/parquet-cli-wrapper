@@ -38,8 +38,8 @@ endif
 		cd $(BUILD_DIR); \
 		unzip -o -qq ./$(ARCHIVE_NAME); \
 		cd parquet-mr-apache-parquet-$(PARQUET_VERSION)/parquet-cli; \
-		mvn clean install -DskipTests; \
-		mvn dependency:copy-dependencies; \
+		mvn -B clean install -DskipTests; \
+		mvn -B dependency:copy-dependencies; \
 		cp target/parquet-cli-$(PARQUET_VERSION).jar $(PACKAGE_LIB_DIR);\
 		cp target/dependency/* $(PACKAGE_LIB_DIR); \
 	}

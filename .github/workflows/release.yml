@@ -1,0 +1,49 @@
+name: release
+on:
+  push:
+    tags:
+      - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Generate changelog
+      uses: orhun/git-cliff-action@v2
+      id: changelog
+      with:
+        args: --current
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        check-latest: false
+    - name: Maven Cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-cache-
+    - name: Build distribution
+      run: |
+        make bundle
+    - name: Upload the binary releases
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: build/parquet-cli.tar.gz
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref }}
+        body: ${{ steps.changelog.outputs.content }}
