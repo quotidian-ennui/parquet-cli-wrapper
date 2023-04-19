@@ -41,4 +41,4 @@ I spend my life in git+bash + WSL2; I don't care about powershell enough (I shou
 - [ ] Create a wrapper jar file that has the appropriate `META-INF/MANIFEST.MF` that means I don't need to cobble a classpath together?
 - [x] Making the release available in my personal scoop bucket?
 - [ ] Create a .cmd equivalent of the shell script
-
+- [ ] add a `make test` because even a single invocation that does something before doing a release might be useful.

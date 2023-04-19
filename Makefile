@@ -25,7 +25,7 @@ help:
 check_binaries:
 	$(foreach bin,$(REQUIRED_BINARIES),$(if $(shell command -v $(bin) 2> /dev/null),,$(error Please install `$(bin)`)))
 
-clean:
+clean: ## Cleanup / delete build artifacts
 	rm -rf $(BUILD_DIR)
 
 build:  check_binaries ## Build the apache parquet-cli tool
