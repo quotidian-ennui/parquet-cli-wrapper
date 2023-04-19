@@ -14,6 +14,11 @@ PACKAGE_LIB_DIR:=$(PACKAGE_DIR)/lib
 ARCHIVE_NAME:=apache-parquet-mr.zip
 PACKAGE_NAME:=parquet-cli.tar.gz
 
+ifneq (,$(wildcard ./.env))
+	include .env
+  export
+endif
+
 help:
 	grep -E '^[a-zA-Z_-]+.*:.*?## .*$$' $(word 1,$(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
