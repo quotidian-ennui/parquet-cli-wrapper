@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+function findSelf() {
+  source="${BASH_SOURCE[0]}"
+  while [ -h "$source" ]; do
+    dir="$( cd -P "$( dirname "$source" )" >/dev/null 2>&1 && pwd )"
+    source="$(readlink "$source")"
+    [[ $source != /* ]] && source="$dir/$source"
+  done
+  echo "$( cd -P "$( dirname "$source" )" >/dev/null 2>&1 && pwd )"
+}
+
+mingw=false
+case "$(uname)" in
+  CYGWIN*|MINGW*|MSYS* )
+    mingw=true
+    ;;
+  *) ;;
+esac
+
+install_loc=$(findSelf)
+
+PARQUET_JARS=$(ls -1 ${install_loc}/lib/*.jar)
+PARQUET_CLASSPATH=$CLASSPATH || true
+
+for jar in $PARQUET_JARS; do PARQUET_CLASSPATH="$PARQUET_CLASSPATH:$jar"; done
+
+if $mingw; then
+  LOCALCLASSPATH=$(cygpath --path --mixed "$PARQUET_CLASSPATH")
+else
+  LOCALCLASSPATH=$PARQUET_CLASSPATH
+fi
+
+exec java -cp "$LOCALCLASSPATH" org.apache.parquet.cli.Main $@
