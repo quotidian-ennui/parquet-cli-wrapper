@@ -1,0 +1,58 @@
+{{ $autoPullRequest := eq (env "UPDATECLI_PULL_REQUEST" | default "false") "true" }}
+
+{{ if $autoPullRequest }}
+actions:
+  pull_request:
+    scmid: default
+    title: '[updatecli] Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
+    kind: github/pullrequest
+    mergemethod: "rebase"
+    spec:
+      labels:
+        - dependencies
+
+scms:
+  default:
+    disabled: false
+    kind: github
+    spec:
+      branch: main
+      owner: quotidian-ennui
+      repository: parquet-cli-wrapper
+      user: 'github-actions[bot]'
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+      username: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      commitmessage:
+        type: "chore"
+        scope: "deps"
+        title: 'Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
+        hidecredit: true
+
+{{ end }}
+
+sources:
+  parquetLatestRelease:
+    kind: githubrelease
+    name: Apache Parquet-MR Latest Version
+    spec:
+      owner: apache
+      repository: parquet-mr
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: "apache-parquet-"
+
+targets:
+  updateParquet:
+    kind: file
+    sourceid: parquetLatestRelease
+    name: Update Parquet .env file
+    spec:
+      file: .env
+      matchpattern: 'PARQUET_VERSION=(.*)'
+      replacepattern: 'PARQUET_VERSION={{ source `parquetLatestRelease` }}'
+{{ if $autoPullRequest }}
+    scmid: default
+{{ end }}

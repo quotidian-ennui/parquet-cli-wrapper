@@ -5,7 +5,6 @@ Builds https://github.com/apache/parquet-mr/tree/master/parquet-cli according to
 ## TLDR;
 
 ```
-export PARQUET_VERSION=1.13.0
 make build
 cd ./build/dist
 ./parquet convert-csv xxxx
@@ -37,7 +36,9 @@ I spend my life in git+bash + WSL2; I don't care about powershell enough (I shou
 
 ## Ongoing tinkering
 
-- Fun and games with publishing the output of `make dist` as a release?
-- Update cli to detect github releases of `parquet-mr?` and create corresponding bundles?
-- Create a wrapper jar file that has the appropriate `META-INF/MANIFEST.MF` that means I don't need to cobble a classpath together?
-- Making the release available in my personal scoop bucket?
+- [x] Fun and games with publishing the output of `make dist` as a release?
+- [x] Update cli to detect github releases of `parquet-mr?` and create a PR
+- [ ] Create a wrapper jar file that has the appropriate `META-INF/MANIFEST.MF` that means I don't need to cobble a classpath together?
+- [x] Making the release available in my personal scoop bucket?
+- [ ] Create a .cmd equivalent of the shell script
+

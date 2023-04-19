@@ -1,0 +1,31 @@
+name: updatecli
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 03 * * SUN'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  updatecli:
+    name: Run updatecli
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Debug
+        uses: hmarr/debug-action@v2
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+      - name: "Setup updatecli"
+        uses: "updatecli/updatecli-action@v2"
+      - name: "Run updatecli"
+        run: |
+          updatecli apply
+        env:
+          UPDATECLI_GITHUB_ACTOR: ${{ github.actor }}
+          UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATECLI_PULL_REQUEST: true
