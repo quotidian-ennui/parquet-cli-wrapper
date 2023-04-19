@@ -2,17 +2,25 @@
 ## Lets build parquet-cli
 MAKEFLAGS+= --silent --always-make
 .DEFAULT_TARGET: help
-MAVEN:=mvn
+MAVEN:=mvn --batch-mode --quiet
 CURL:=curl -fsSL
 SHELL:=bash
 
-REQUIRED_BINARIES:=mvn curl java unzip
+REQUIRED_BINARIES:=mvn curl java unzip jq
 
 BUILD_DIR:=$(CURDIR)/build
 PACKAGE_DIR:=$(BUILD_DIR)/dist
 PACKAGE_LIB_DIR:=$(PACKAGE_DIR)/lib
 ARCHIVE_NAME:=apache-parquet-mr.zip
 PACKAGE_NAME:=parquet-cli.tar.gz
+
+## Test Data.
+TEST_DATA_DIR:=$(CURDIR)/test
+TEST_CSV_FILE:=$(TEST_DATA_DIR)/users.csv
+TEST_CSV_HEADERS:=name,phone,email,address,postalZip,region,country
+TEST_CSV_SCHEMA:=$(BUILD_DIR)/users.schema
+TEST_CSV_PARQUET:=$(BUILD_DIR)/users.parquet
+TEST_CSV_NAME:=Chloe Aguilar
 
 ifneq (,$(wildcard ./.env))
 	include .env
@@ -32,21 +40,44 @@ build:  check_binaries ## Build the apache parquet-cli tool
 ifndef PARQUET_VERSION
 	$(error PARQUET_VERSION environment variable not set)
 endif
+	echo "--- Downloading parquet-cli ($(PARQUET_VERSION))"
 	mkdir -p $(BUILD_DIR) $(PACKAGE_DIR)/lib
 	$(CURL) -o $(BUILD_DIR)/$(ARCHIVE_NAME) https://github.com/apache/parquet-mr/archive/refs/tags/apache-parquet-$(PARQUET_VERSION).zip
+	echo "--- Building parquet-cli"
 	{ \
 		cd $(BUILD_DIR); \
 		unzip -o -qq ./$(ARCHIVE_NAME); \
 		cd parquet-mr-apache-parquet-$(PARQUET_VERSION)/parquet-cli; \
-		mvn -B clean install -DskipTests; \
-		mvn -B dependency:copy-dependencies; \
+		$(MAVEN) clean package -DskipTests; \
+		$(MAVEN) dependency:copy-dependencies; \
 		cp target/parquet-cli-$(PARQUET_VERSION).jar $(PACKAGE_LIB_DIR);\
 		cp target/dependency/* $(PACKAGE_LIB_DIR); \
 	}
 	cp parquet $(PACKAGE_DIR)
 
 bundle: build ## create a zip file bundle
-	{\
+	echo "--- Packaging parquet-cli"
+	{ \
 		cd $(PACKAGE_DIR); \
 		tar -czf ../$(PACKAGE_NAME) *; \
+	}
+
+# parquet csv-schema --header name,phone,email,address,postalZip,region,country --class users users.csv
+test: build ## Run a minimal set of test
+	echo "--- Running Tests"
+	echo "[+] parquet csv-schema"
+	{ \
+		cd $(PACKAGE_DIR); \
+		./parquet csv-schema --header $(TEST_CSV_HEADERS) --class test $(TEST_CSV_FILE) --minimize >$(TEST_CSV_SCHEMA); \
+	}
+	echo "[+] parquet convert-csv"
+	{ \
+		cd $(PACKAGE_DIR); \
+		./parquet convert-csv $(TEST_CSV_FILE) --schema $(TEST_CSV_SCHEMA) --output $(TEST_CSV_PARQUET) --overwrite; \
+	}
+	echo "[+] parquet head"
+	{ \
+		cd $(PACKAGE_DIR); \
+		name=$$(./parquet head $(TEST_CSV_PARQUET) -n 1 | jq -r ".name"); \
+		if [[ "$$name" != "$(TEST_CSV_NAME)" ]]; then echo "Unexpected name [$$name]" && exit 1; fi \
 	}

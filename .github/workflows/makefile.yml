@@ -38,6 +38,6 @@ jobs:
         key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
         restore-keys: |
           ${{ runner.os }}-maven-cache-
-    - name: Build
+    - name: Build & Test
       run: |
-        make build
+        make build test
