@@ -46,4 +46,5 @@ jobs:
         file: build/parquet-cli.tar.gz
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref }}
+        release_name: ${{ github.ref }}
         body: ${{ steps.changelog.outputs.content }}
