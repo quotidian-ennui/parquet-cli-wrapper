@@ -41,7 +41,7 @@ I spend my life in git+bash + WSL2; I don't care about powershell enough (I shou
 
 - [x] Fun and games with publishing the output of `make dist` as a release?
 - [x] Update cli to detect github releases of `parquet-mr?` and create a PR
-- [ ] Create a wrapper jar file that has the appropriate `META-INF/MANIFEST.MF` that means I don't need to cobble a classpath together?
+- [ ] ~~Create a wrapper jar file that has the appropriate `META-INF/MANIFEST.MF` that means I don't need to cobble a classpath together?~~
 - [x] Make the release available in my [personal scoop bucket](https://github.com/quotidian-ennui/personal-scoop-bucket/blob/main/bucket/parquet-cli.json)
-- [ ] Create a .cmd equivalent of the shell script
+- [x] Create a .cmd equivalent of the shell script
 - [x] add a `make test` because even a single invocation that does something before doing a release might be useful.

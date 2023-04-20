@@ -54,6 +54,7 @@ endif
 		cp target/dependency/* $(PACKAGE_LIB_DIR); \
 	}
 	cp parquet $(PACKAGE_DIR)
+	cp parquet.cmd $(PACKAGE_DIR)
 
 bundle: build ## create a zip file bundle
 	echo "--- Packaging parquet-cli"

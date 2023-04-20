@@ -20,12 +20,7 @@ case "$(uname)" in
   *) ;;
 esac
 
-install_loc=$(findSelf)
-
-PARQUET_JARS=$(ls -1 ${install_loc}/lib/*.jar)
-PARQUET_CLASSPATH=$CLASSPATH || true
-
-for jar in $PARQUET_JARS; do PARQUET_CLASSPATH="$PARQUET_CLASSPATH:$jar"; done
+PARQUET_CLASSPATH="$(findSelf)/lib/*"
 
 if $mingw; then
   LOCALCLASSPATH=$(cygpath --path --mixed "$PARQUET_CLASSPATH")
