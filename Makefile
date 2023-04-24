@@ -5,8 +5,9 @@ MAKEFLAGS+= --silent --always-make
 MAVEN:=mvn --batch-mode --quiet
 CURL:=curl -fsSL
 SHELL:=bash
+UPDATECLI:=updatecli
 
-REQUIRED_BINARIES:=mvn curl java unzip jq
+REQUIRED_BINARIES:=mvn curl java unzip jq tar
 
 BUILD_DIR:=$(CURDIR)/build
 PACKAGE_DIR:=$(BUILD_DIR)/dist
@@ -48,8 +49,7 @@ endif
 		cd $(BUILD_DIR); \
 		unzip -o -qq ./$(ARCHIVE_NAME); \
 		cd parquet-mr-apache-parquet-$(PARQUET_VERSION)/parquet-cli; \
-		$(MAVEN) clean package -DskipTests; \
-		$(MAVEN) dependency:copy-dependencies; \
+		$(MAVEN) clean package dependency:copy-dependencies -DskipTests; \
 		cp target/parquet-cli-$(PARQUET_VERSION).jar $(PACKAGE_LIB_DIR);\
 		cp target/dependency/* $(PACKAGE_LIB_DIR); \
 	}
@@ -82,3 +82,9 @@ test: build ## Run a minimal set of test
 		name=$$(./parquet head $(TEST_CSV_PARQUET) -n 1 | jq -r ".name"); \
 		if [[ "$$name" != "$(TEST_CSV_NAME)" ]]; then echo "Unexpected name [$$name]" && exit 1; fi \
 	}
+
+diff: ## 'updatecli diff'
+	$(UPDATECLI) diff
+
+apply: ## 'updatecli apply'
+	$(UPDATECLI) apply
