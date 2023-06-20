@@ -15,36 +15,44 @@ jobs:
     permissions:
       contents: write
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Generate changelog
-      uses: orhun/git-cliff-action@v2
-      id: changelog
-      with:
-        args: --current
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '11'
-        check-latest: false
-    - name: Maven Cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-cache-
-    - name: Build distribution
-      run: |
-        make bundle
-    - name: Upload the binary releases
-      uses: svenstaro/upload-release-action@v2
-      with:
-        file: build/parquet-cli.tar.gz
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-        body: ${{ steps.changelog.outputs.content }}
+      - name: Debug Env & Event
+        uses: hmarr/debug-action@v2
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v2
+        id: changelog
+        with:
+          args: --current
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          check-latest: false
+      - name: Maven Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-cache-
+      - name: Build distribution
+        id: build
+        run: |
+          echo "release_name=$(echo ${GITHUB_REF#refs/tags/} | tr / -)" >> "$GITHUB_OUTPUT"
+          make bundle
+      - name: Upload the binary releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: build/parquet-cli.tar.gz
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          release_name: ${{ steps.build.outputs.release_name }}
+          body: ${{ steps.changelog.outputs.content }}
