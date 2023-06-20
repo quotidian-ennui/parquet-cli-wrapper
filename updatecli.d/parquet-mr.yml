@@ -4,7 +4,7 @@
 actions:
   pull_request:
     scmid: default
-    title: '[updatecli] Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
+    title: 'chore(deps): Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
     kind: github/pullrequest
     mergemethod: "rebase"
     spec:
