@@ -19,7 +19,7 @@ jobs:
       - name: Debug
         uses: hmarr/debug-action@v2
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Setup updatecli"
         uses: "updatecli/updatecli-action@v2"
       - name: "Run updatecli"
