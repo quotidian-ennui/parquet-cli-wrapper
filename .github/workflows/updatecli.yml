@@ -24,7 +24,11 @@ jobs:
         uses: "updatecli/updatecli-action@v2"
       - name: "Run updatecli"
         run: |
-          updatecli apply
+          updatecli version
+          configs=$(ls -1 "./updatecli.d"/*.yml)
+          for conf in $configs; do
+            updatecli apply --config "$conf"
+          done
         env:
           UPDATECLI_GITHUB_ACTOR: ${{ github.actor }}
           UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
