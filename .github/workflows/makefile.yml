@@ -32,7 +32,7 @@ jobs:
     ## Since we're wrapping maven there is no pom file which
     ## means that setup-java fails if you add a cache: "maven"
     - name: Maven Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}

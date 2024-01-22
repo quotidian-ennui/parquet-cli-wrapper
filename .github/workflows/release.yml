@@ -37,7 +37,7 @@ jobs:
           java-version: '11'
           check-latest: false
       - name: Maven Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
