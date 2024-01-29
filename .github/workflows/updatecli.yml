@@ -3,11 +3,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '15 03 * * SUN'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   updatecli:
     name: Run updatecli
@@ -16,21 +14,16 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Debug
-        uses: hmarr/debug-action@v2
       - name: "Checkout"
-        uses: "actions/checkout@v4"
-      - name: "Setup updatecli"
-        uses: "updatecli/updatecli-action@v2"
-      - name: "Run updatecli"
-        run: |
-          updatecli version
-          configs=$(ls -1 "./updatecli.d"/*.yml)
-          for conf in $configs; do
-            updatecli apply --config "$conf"
-          done
-        env:
-          UPDATECLI_GITHUB_ACTOR: ${{ github.actor }}
-          UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          UPDATECLI_PULL_REQUEST: true
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: "Create Token"
+        uses: actions/create-github-app-token@c4fa18d55c5d49e6a2793e351ea4938322c61072 # v1.6.4
+        id: app-token
+        with:
+          app-id: ${{ vars.WORKFLOW_UPDATE_APP_ID }}
+          private-key: ${{ secrets.WORKFLOW_UPDATE_KEY }}
+          owner: ${{ github.repository_owner }}
+      - name: updatecli
+        uses: quotidian-ennui/actions-olio/default-updatecli@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}

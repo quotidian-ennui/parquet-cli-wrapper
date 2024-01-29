@@ -1,12 +1,12 @@
-{{ $autoPullRequest := eq (env "UPDATECLI_PULL_REQUEST" | default "false") "true" }}
+# {{ $scmEnabled := and (env "GITHUB_REPOSITORY_OWNER") (env "GITHUB_REPOSITORY_NAME") }}
 
-{{ if $autoPullRequest }}
+# {{ if $scmEnabled }}
 actions:
   pull_request:
     scmid: default
     title: 'chore(deps): Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
     kind: github/pullrequest
-    mergemethod: "rebase"
+    mergemethod: "squash"
     spec:
       labels:
         - dependencies
@@ -17,11 +17,11 @@ scms:
     kind: github
     spec:
       branch: main
-      owner: quotidian-ennui
-      repository: parquet-cli-wrapper
-      user: 'github-actions[bot]'
-      email: 41898282+github-actions[bot]@users.noreply.github.com
-      username: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      owner: '{{ requiredEnv "GITHUB_REPOSITORY_OWNER" }}'
+      repository: '{{ requiredEnv "GITHUB_REPOSITORY_NAME" }}'
+      user: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
+      email: '{{ requiredEnv "UPDATECLI_GITHUB_EMAIL" }}'
+      username: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       commitmessage:
         type: "chore"
@@ -29,7 +29,7 @@ scms:
         title: 'Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
         hidecredit: true
 
-{{ end }}
+# {{ end }}
 
 sources:
   parquetLatestRelease:
@@ -48,11 +48,11 @@ targets:
   updateParquet:
     kind: file
     sourceid: parquetLatestRelease
-    name: Update Parquet .env file
+    name: Update Parquet .env file to {{ source "parquetLatestRelease" }}
+    # {{ if $scmEnabled }}
+    scmid: default
+    # {{ end }}
     spec:
       file: .env
       matchpattern: 'PARQUET_VERSION=(.*)'
       replacepattern: 'PARQUET_VERSION={{ source `parquetLatestRelease` }}'
-{{ if $autoPullRequest }}
-    scmid: default
-{{ end }}
