@@ -1,0 +1,32 @@
+name: dependabot-merge
+run-name: Merge PR (${{ github.event.client_payload.detail.pull_request }})
+on:
+  repository_dispatch:
+    types:
+      - pr-trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  actions_merge:
+    runs-on: ubuntu-latest
+    name: Dependabot Merge (action changes)
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ github.event.client_payload.base.ref }}
+      - name: "Create Token"
+        uses: actions/create-github-app-token@c4fa18d55c5d49e6a2793e351ea4938322c61072 # v1.6.4
+        id: app-token
+        with:
+          app-id: ${{ vars.WORKFLOW_UPDATE_APP_ID }}
+          private-key: ${{ secrets.WORKFLOW_UPDATE_KEY }}
+          owner: ${{ github.repository_owner }}
+      - name: Dependabot Merge
+        id: dependabot_merge
+        uses: quotidian-ennui/actions-olio/dependabot-action-merge@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
