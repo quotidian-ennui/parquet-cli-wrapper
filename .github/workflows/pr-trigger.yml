@@ -14,32 +14,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-      issues: read
     runs-on: ubuntu-latest
-    name: Dependabot Workflow Trigger
+    name: PR Trigger
     steps:
-      - name: Find associated PR
-        uses: jwalton/gh-find-current-pr@89ee5799558265a1e0e31fab792ebb4ee91c016b # v1.3.3
-        id: findpr
-        with:
-          github-token: ${{ github.token }}
-          state: open
-          sha: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
-      - name: Grab Dependabot metadata
-        if: ${{ github.actor == 'dependabot[bot]' }}
-        id: depbot-metadata
-        continue-on-error: true
-        uses: dependabot/fetch-metadata@c9c4182bf1b97f5224aee3906fd373f6b61b4526 # v1.6.0
       - name: dispatch
-        id: dispatch
-        uses: quotidian-ennui/actions-olio/repo-dispatch@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
-        with:
-          event_type: pr-trigger
-          token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
-          ref: ${{ github.head_ref }}
-          event_detail: |
-            {
-              "pull_request": "${{ steps.findpr.outputs.pr }}",
-              "dependabot_update_type": "${{ steps.depbot-metadata.outputs.update-type || 'unknown' }}"
-            }
+        uses: quotidian-ennui/actions-olio/pr-trigger@main
