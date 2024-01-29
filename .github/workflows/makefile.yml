@@ -8,6 +8,8 @@ on:
       - "README.md"
       - ".github/workflows/updatecli.yml"
       - ".github/workflows/release.yml"
+      - ".github/workflows/dependabot-merge.yml"
+      - ".github/workflows/makefile.yml"
       - ".github/dependabot.yml"
   pull_request:
     branches:
