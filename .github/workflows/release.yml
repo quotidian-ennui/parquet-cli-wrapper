@@ -2,12 +2,11 @@ name: release
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 
 jobs:
   create-release:
@@ -16,28 +15,28 @@ jobs:
       contents: write
     steps:
       - name: Debug Env & Event
-        uses: hmarr/debug-action@v2
+        uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a # v2.1.0
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v2
+        uses: orhun/git-cliff-action@b7913b664658dd091d9971658cb02a19047baa79 # v2.3.0
         id: changelog
         with:
           args: --current
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
         with:
-          distribution: 'temurin'
-          java-version: '11'
+          distribution: "temurin"
+          java-version: "11"
           check-latest: false
       - name: Maven Cache
-        uses: actions/cache@v4
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
@@ -49,7 +48,7 @@ jobs:
           echo "release_name=$(echo ${GITHUB_REF#refs/tags/} | tr / -)" >> "$GITHUB_OUTPUT"
           make bundle
       - name: Upload the binary releases
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@1beeb572c19a9242f4361f4cee78f8e0d9aec5df # 2.7.0
         with:
           file: build/parquet-cli.tar.gz
           repo_token: ${{ secrets.GITHUB_TOKEN }}
