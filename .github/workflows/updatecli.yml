@@ -2,7 +2,7 @@ name: updatecli
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 03 * * SUN'
+    - cron: "15 03 * * SUN"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
