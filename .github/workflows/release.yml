@@ -15,7 +15,7 @@ jobs:
       contents: write
     steps:
       - name: Debug Env & Event
-        uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a # v2.1.0
+        uses: hmarr/debug-action@cd1afbd7852b7ad7b1b7a9a1b03efebd3b0a1820 # v3.0.0
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
