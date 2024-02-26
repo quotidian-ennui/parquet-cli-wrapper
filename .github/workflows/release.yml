@@ -48,7 +48,7 @@ jobs:
           echo "release_name=$(echo ${GITHUB_REF#refs/tags/} | tr / -)" >> "$GITHUB_OUTPUT"
           make bundle
       - name: Upload the binary releases
-        uses: svenstaro/upload-release-action@1beeb572c19a9242f4361f4cee78f8e0d9aec5df # 2.7.0
+        uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # 2.9.0
         with:
           file: build/parquet-cli.tar.gz
           repo_token: ${{ secrets.GITHUB_TOKEN }}
