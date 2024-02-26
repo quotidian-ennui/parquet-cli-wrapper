@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Generate changelog
-        uses: orhun/git-cliff-action@b7913b664658dd091d9971658cb02a19047baa79 # v2.3.0
+        uses: orhun/git-cliff-action@90ed560c895459ac2ae450a00604a6ad02a78478 # v3.0.1
         id: changelog
         with:
           args: --current
