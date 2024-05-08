@@ -8,12 +8,12 @@ Builds https://github.com/apache/parquet-mr/tree/master/parquet-cli according to
 ## TLDR;
 
 ```
-make build
+just build
 cd ./build/dist
 ./parquet convert-csv xxxx
 ```
 
-- `make bundle` will build a tar.gz file that you can extract so that the parquet script is in the path; or just make _build/dist_ part of the path.
+- `just bundle` will build a tar.gz file that you can extract so that the parquet script is in the path; or just make _build/dist_ part of the path.
 
 ```
 $ export PATH=$PATH:/home/quotidian-ennui/parquet-cli-wrapper/build/dist

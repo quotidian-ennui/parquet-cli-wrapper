@@ -5,6 +5,7 @@ set -eo pipefail
 function findSelf() {
   source="${BASH_SOURCE[0]}"
   while [ -h "$source" ]; do
+    # shellcheck disable=SC2005
     dir="$( cd -P "$( dirname "$source" )" >/dev/null 2>&1 && pwd )"
     source="$(readlink "$source")"
     [[ $source != /* ]] && source="$dir/$source"
@@ -28,4 +29,4 @@ else
   LOCALCLASSPATH=$PARQUET_CLASSPATH
 fi
 
-exec java -cp "$LOCALCLASSPATH" org.apache.parquet.cli.Main $@
+exec java -cp "$LOCALCLASSPATH" org.apache.parquet.cli.Main "$@"

@@ -1,4 +1,4 @@
-name: makefile
+name: build
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - ".github/workflows/updatecli.yml"
       - ".github/workflows/release.yml"
       - ".github/workflows/dependabot-merge.yml"
-      - ".github/workflows/makefile.yml"
+      - ".github/workflows/build.yml"
       - ".github/dependabot.yml"
   pull_request:
     branches:
@@ -18,6 +18,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  JUST_VERSION: 1.25.2
 
 jobs:
   build:
@@ -31,15 +34,20 @@ jobs:
           distribution: "temurin"
           java-version: "11"
           check-latest: false
+      - name: Install Just
+        uses: taiki-e/install-action@6608b29f1fd1773aafb923cffd26c3a528f72083 # v2.33.17
+        with:
+          tool: just@${{ env.JUST_VERSION }}
       ## Since we're wrapping maven there is no pom file which
       ## means that setup-java fails if you add a cache: "maven"
       - name: Maven Cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}-${{ hashFiles('.env') }}
           restore-keys: |
+            ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}
             ${{ runner.os }}-maven-cache-
       - name: Build & Test
         run: |
-          make build test
+          just build test

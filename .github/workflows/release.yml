@@ -8,6 +8,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  JUST_VERSION: 1.25.2
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
@@ -24,6 +27,10 @@ jobs:
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           fetch-depth: 0
+      - name: Install Just
+        uses: taiki-e/install-action@6608b29f1fd1773aafb923cffd26c3a528f72083 # v2.33.17
+        with:
+          tool: just@${{ env.JUST_VERSION }}
       - name: Generate changelog
         uses: orhun/git-cliff-action@8b17108aad4d9362649a5dae020746c2a767c90d # v3.0.2
         id: changelog
@@ -39,14 +46,15 @@ jobs:
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Makefile') }}
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}-${{ hashFiles('.env') }}
           restore-keys: |
+            ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}
             ${{ runner.os }}-maven-cache-
       - name: Build distribution
         id: build
         run: |
           echo "release_name=$(echo ${GITHUB_REF#refs/tags/} | tr / -)" >> "$GITHUB_OUTPUT"
-          make bundle
+          just bundle
       - name: Upload the binary releases
         uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # 2.9.0
         with:
