@@ -17,7 +17,7 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | striptags | trim | upper_first }}
     {% for commit in commits %}
-        - {% if commit.scope %}({{ commit.scope }}) {% endif %}{% if commit.breaking %}(**BREAKING**) {% endif %}{{ commit.message | upper_first }} by {{commit.author.name}}\
+        - {% if commit.breaking %}💥(**BREAKING**) {% endif %}{% if commit.scope %}({{ commit.scope }}) {% endif %}{{ commit.message | upper_first | trim }} by {{commit.author.name}}\
     {% endfor %}
 {% endfor %}\n
 """
@@ -46,30 +46,32 @@ commit_preprocessors = [
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
-    { message = "^feat\\(tf\\)", group = "<!-- 09 -->Terraform"},
-    { message = "^feat\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
-    { message = "^feat", group = "<!-- 01 -->Features"},
+    { message = "^feat\\(tf\\)", group = "<!-- 09 -->🏙️ Terraform"},
+    { message = "^feat\\(ci|build\\)", group = "<!-- 07 -->👷 Build Environment"},
+    { message = "^feat", group = "<!-- 01 -->✨ Features"},
     { message = "^fixup!", skip = true},
-    { message = "^fix\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
-    { message = "^fix", group = "<!-- 02 -->Bug Fixes"},
-    { message = "^doc", group = "<!-- 03 -->Documentation"},
-    { message = "^perf", group = "<!-- 04 -->Performance"},
-    { message = "^refactor\\(tf\\)", group = "<!-- 09 -->Terraform"},
-    { message = "^refactor\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
-    { message = "^refactor", group = "<!-- 05 -->Refactoring"},
-    { message = "^test", group = "<!-- 06 -->Testing"},
-    { message = "^build\\(deps.*\\)", group = "<!-- 99 -->Dependency Management"},
-    { message = "^build\\(dev-deps.*\\)", group = "<!-- 99 -->Dependency Management"},
-    { message = "^(ci|build)", group = "<!-- 07 -->Build Environment"},
-    { message = "^deps\\(tf\\)", group = "<!-- 09 -->Terraform"},
-    { message = "^deps\\(ci\\)", group = "<!-- 07 -->Build Environment"},
-    { message = "^deps\\(actions\\)", group = "<!-- 07 -->Build Environment"},
-    { message = "^deps", group = "<!-- 99 -->Dependency Management"},
-    { message = "^chore\\(deps\\)", group = "<!-- 99 -->Dependency Management"},
+    { message = "^fix\\(ci|build\\)", group = "<!-- 07 -->👷 Build Environment"},
+    { message = "^fix", group = "<!-- 02 -->🐛 Bug Fixes"},
+    { message = "^doc", group = "<!-- 03 -->📝 Documentation"},
+    { message = "^perf", group = "<!-- 04 -->⚡ Performance"},
+    { message = "^refactor\\(tf\\)", group = "<!-- 09 -->🏙️ Terraform"},
+    { message = "^refactor\\(ci|build\\)", group = "<!-- 07 -->👷 Build Environment"},
+    { message = "^refactor", group = "<!-- 05 -->♻️ Refactoring"},
+    { message = "^lint", group = "<!-- 05 -->♻️ Refactoring"},
+    { message = "^test", group = "<!-- 06 -->🧪 Testing"},
+    { message = "^build\\(deps.*\\)", group = "<!-- 99 -->📌 Dependency Management"},
+    { message = "^build\\(dev-deps.*\\)", group = "<!-- 99 -->📌 Dependency Management"},
+    { message = "^(ci|build)", group = "<!-- 07 -->👷 Build Environment"},
+    { message = "^deps\\(ci|build|actions\\)", group = "<!-- 07 -->👷 Build Environment"},
+    { message = "^deps", group = "<!-- 99 -->📌 Dependency Management"},
+    { message = "^chore\\(deps\\)", group = "<!-- 99 -->📌 Dependency Management"},
     { message = "^chore\\(release\\):", skip = true},
     { message = "^release:", skip = true},
-    { message = "^chore", group = "<!-- 10 -->Miscellaneous Tasks"},
-    { body = ".*security", group = "<!-- 00 -->Security"}
+    { message = "^Merge branch '", skip = true},
+    { message = "^Initial commit", skip = true},
+    { message = "^chore", group = "<!-- 10 -->🧹 Miscellaneous Tasks"},
+    { body = ".*security", group = "<!-- 00 -->🛡️ Security"},
+    { message = ".*", group = "<!--80-->🤷 Uncategorised" },
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = false
