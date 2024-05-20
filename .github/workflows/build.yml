@@ -1,5 +1,4 @@
 name: build
-
 on:
   push:
     branches:
@@ -14,14 +13,11 @@ on:
   pull_request:
     branches:
       - main
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 env:
-  JUST_VERSION: 1.25.2
-
+  JUST_VERSION: 1.26.0
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -3,14 +3,11 @@ on:
   push:
     tags:
       - "*"
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 env:
-  JUST_VERSION: 1.25.2
-
+  JUST_VERSION: 1.26.0
 jobs:
   create-release:
     runs-on: ubuntu-latest
