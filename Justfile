@@ -46,12 +46,14 @@ build: check_binaries
 
   echo "--- Downloading parquet-cli ({{ PARQUET_VERSION }})"
   mkdir -p "{{ BUILD_DIR }}" "{{ PACKAGE_DIR }}/lib"
-  curl -fsSL -o "{{ BUILD_DIR }}/{{ ARCHIVE_NAME }}" "https://github.com/apache/parquet-mr/archive/refs/tags/apache-parquet-{{ PARQUET_VERSION }}.zip"
+  DOWNLOAD_URL="https://github.com/apache/parquet-java/archive/refs/tags/apache-parquet-{{ PARQUET_VERSION }}.zip"
+  curl -fsSL -o "{{ BUILD_DIR }}/{{ ARCHIVE_NAME }}" "$DOWNLOAD_URL"
   echo "--- Building parquet-cli"
   {
     pushd "{{ BUILD_DIR }}" >/dev/null
     unzip -o -qq "./{{ ARCHIVE_NAME }}"
-    pushd "parquet-mr-apache-parquet-{{ PARQUET_VERSION }}/parquet-cli" >/dev/null
+    parquet_cli_dir=$(find . -type d -name "parquet-cli")
+    pushd "$parquet_cli_dir" >/dev/null
     mvn --batch-mode --quiet clean package dependency:copy-dependencies -DskipTests
     cp "target/parquet-cli-{{ PARQUET_VERSION }}.jar" "{{ PACKAGE_LIB_DIR }}"
     cp target/dependency/* "{{ PACKAGE_LIB_DIR }}"
