@@ -1,13 +1,12 @@
 # {{ $scmEnabled := and (env "GITHUB_REPOSITORY_OWNER") (env "GITHUB_REPOSITORY_NAME") }}
 
-name: "parquet-mr"
+name: "parquet-java"
 # {{ if $scmEnabled }}
 actions:
   pull_request:
     scmid: default
-    title: 'chore(deps): Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
+    title: 'chore(deps): Bump parquet-java version to {{ source "parquetLatestRelease" }}'
     kind: github/pullrequest
-    mergemethod: "squash"
     spec:
       labels:
         - dependencies
@@ -27,7 +26,7 @@ scms:
       commitmessage:
         type: "chore"
         scope: "deps"
-        title: 'Bump Apache Parquet-MR version to {{ source "parquetLatestRelease" }}'
+        title: 'Bump parquet-java version to {{ source "parquetLatestRelease" }}'
         hidecredit: true
 
 # {{ end }}
@@ -35,10 +34,10 @@ scms:
 sources:
   parquetLatestRelease:
     kind: githubrelease
-    name: Apache Parquet-MR Latest Version
+    name: parquet-java latest release
     spec:
       owner: apache
-      repository: parquet-mr
+      repository: parquet-java
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       versionfilter:
         kind: regex
@@ -50,7 +49,7 @@ targets:
   updateParquet:
     kind: file
     sourceid: parquetLatestRelease
-    name: Update Parquet .env file to {{ source "parquetLatestRelease" }}
+    name: Update parquet .env file to {{ source "parquetLatestRelease" }}
     # {{ if $scmEnabled }}
     scmid: default
     # {{ end }}
