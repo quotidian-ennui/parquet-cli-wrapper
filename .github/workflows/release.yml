@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Just
-        uses: taiki-e/install-action@60784cb1f434ce8a3cc04670ea753e1c8868e17e # v2.33.34
+        uses: taiki-e/install-action@4e38715ddc7c4e1fd3e44ab4c124a2dcca7306fd # v2.34.0
         with:
           tool: just@${{ env.JUST_VERSION }}
       - name: Generate changelog
