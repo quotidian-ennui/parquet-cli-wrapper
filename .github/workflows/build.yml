@@ -31,7 +31,7 @@ jobs:
           java-version: "11"
           check-latest: false
       - name: Install Just
-        uses: taiki-e/install-action@9bef7e9c3d7c7aa986ef19933b0722880ae377e0 # v2.44.13
+        uses: taiki-e/install-action@b1acf153d459cd533e9e0d25a07042be1dd2ed71 # v2.44.25
         with:
           tool: just@${{ env.JUST_VERSION }}
       ## Since we're wrapping maven there is no pom file which
