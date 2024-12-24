@@ -24,8 +24,8 @@ scms:
       username: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       commitmessage:
-        type: "chore"
-        scope: "deps"
+        type: "feat"
+        scope: "parquet-java"
         title: 'Bump parquet-java version to {{ source "parquetLatestRelease" }}'
         hidecredit: true
 
