@@ -1,5 +1,8 @@
 set positional-arguments := true
 set dotenv-load
+set unstable := true
+set script-interpreter := ['/usr/bin/env', 'bash']
+
 
 REQUIRED_BINARIES:="mvn curl java unzip jq tar"
 PARQUET_VERSION:=env_var("PARQUET_VERSION")
@@ -23,8 +26,9 @@ TEST_CSV_NAME:="Chloe Aguilar"
   just --list --list-prefix "  "
 
 [private]
+[script]
 check_binaries:
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   required="{{ REQUIRED_BINARIES }}"
@@ -40,8 +44,9 @@ check_binaries:
   rm -rf "{{ BUILD_DIR }}"
 
 # Build the apache parquet-cli tool
+[script]
 build: check_binaries
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   echo "--- Downloading parquet-cli ({{ PARQUET_VERSION }})"
@@ -63,8 +68,9 @@ build: check_binaries
   cp parquet parquet.cmd "{{ PACKAGE_DIR }}"
 
 # create a tar.gz file bundle
+[script]
 bundle: build
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   echo "--- Packaging parquet-cli"
@@ -75,8 +81,9 @@ bundle: build
 
 # parquet csv-schema --header name,phone,email,address,postalZip,region,country --class users users.csv
 # Run minimal set of tests
+[script]
 test: build
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   echo "--- Running Tests"
@@ -97,8 +104,9 @@ test: build
   updatecli "$@"
 
 # tag and optionally the tag
+[script]
 release tag push="localonly":
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   git diff --quiet || (echo "--> git is dirty" && exit 1)
