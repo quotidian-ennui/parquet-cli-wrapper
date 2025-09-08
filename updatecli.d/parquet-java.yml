@@ -5,7 +5,7 @@ name: "parquet-java"
 actions:
   pull_request:
     scmid: default
-    title: 'chore(deps): Bump parquet-java version to {{ source "parquetLatestRelease" }}'
+    title: 'feat(parquet-java): Bump parquet-java version to {{ source "parquetLatestRelease" }}'
     kind: github/pullrequest
     spec:
       labels:
