@@ -40,11 +40,13 @@ check_binaries:
   done
 
 # Cleanup / delete build artifacts
+[group("build")]
 @clean:
   rm -rf "{{ BUILD_DIR }}"
 
 # Build the apache parquet-cli tool
 [script]
+[group("build")]
 build: check_binaries
   #
   set -eo pipefail
@@ -69,6 +71,7 @@ build: check_binaries
 
 # create a tar.gz file bundle
 [script]
+[group("build")]
 bundle: build
   #
   set -eo pipefail
@@ -82,6 +85,7 @@ bundle: build
 # parquet csv-schema --header name,phone,email,address,postalZip,region,country --class users users.csv
 # Run minimal set of tests
 [script]
+[group("build")]
 test: build
   #
   set -eo pipefail
@@ -100,10 +104,12 @@ test: build
   fi
 
 # run updatecli with args e.g. just updatecli diff
+[group("build")]
 @updatecli action='diff':
   updatecli "$@"
 
 # tag and optionally the tag
+[group("release")]
 [script]
 release tag push="localonly":
   #
@@ -121,3 +127,8 @@ release tag push="localonly":
     *)
       ;;
   esac
+
+# Show proposed release notes
+[group("release")]
+@changelog *args='--unreleased':
+    GITHUB_TOKEN=$(gh auth token) git cliff --github-repo "quotidian-ennui/parquet-cli-wrapper" "$@" 2>/dev/null
