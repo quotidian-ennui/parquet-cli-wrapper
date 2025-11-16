@@ -121,7 +121,6 @@ release tag push="localonly":
   git tag "$tag" -m"release: $tag"
   case "$push" in
     push|github)
-      git push --all
       git push --tags
       ;;
     *)
