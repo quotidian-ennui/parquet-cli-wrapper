@@ -5,14 +5,16 @@ on:
     types:
       - pr-trigger
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   actions_merge:
     runs-on: ubuntu-latest
     name: Dependabot Merge (action changes)
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - name: Checkout branch
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1

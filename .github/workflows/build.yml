@@ -18,9 +18,14 @@ concurrency:
   cancel-in-progress: true
 env:
   JUST_VERSION: 1.44.1
+
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1

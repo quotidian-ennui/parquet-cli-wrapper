@@ -8,6 +8,9 @@ concurrency:
   cancel-in-progress: true
 env:
   JUST_VERSION: 1.44.1
+
+permissions: {}
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
