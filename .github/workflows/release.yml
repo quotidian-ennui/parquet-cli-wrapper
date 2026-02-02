@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install Just
-        uses: taiki-e/install-action@887bc4e03483810873d617344dd5189cd82e7b8b # v2.67.11
+        uses: taiki-e/install-action@650c5ca14212efbbf3e580844b04bdccf68dac31 # v2.67.18
         with:
           tool: just@${{ env.JUST_VERSION }}
       - name: Generate changelog
