@@ -18,4 +18,4 @@ jobs:
     name: PR Trigger
     steps:
       - name: dispatch
-        uses: quotidian-ennui/actions-olio/pr-trigger@1676ca6e5208a6f314f6c2255bdd8a072ddc33eb # v0.9.0
+        uses: quotidian-ennui/actions-olio/pr-trigger@83871db203c510c8c8d65292f24ebf5437728e7c # v0.9.1
