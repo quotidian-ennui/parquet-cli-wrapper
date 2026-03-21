@@ -40,8 +40,9 @@ sources:
       repository: parquet-java
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       versionfilter:
-        kind: regex
-        pattern: "apache-parquet-[0-9]+\\.[0-9]+\\.[0-9]+$"
+        kind: regex/semver
+        regex: "apache-parquet-([0-9]+\\.[0-9]+\\.[0-9]+)$"
+        pattern: "*"
     transformers:
       - trimprefix: "apache-parquet-"
 
