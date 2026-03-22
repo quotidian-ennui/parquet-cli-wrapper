@@ -51,7 +51,7 @@ jobs:
       - name: Build distribution
         id: build
         run: |
-          echo "release_name=$(echo ${GITHUB_REF#refs/tags/} | tr / -)" >> "$GITHUB_OUTPUT"
+          echo "release_name=$(echo "${GITHUB_REF#refs/tags/}" | tr / -)" >> "$GITHUB_OUTPUT"
           just bundle
       - name: Upload the binary releases
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5

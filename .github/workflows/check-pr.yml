@@ -1,0 +1,17 @@
+name: Check PR
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, edited]
+
+permissions: {}
+
+jobs:
+  check-pr:
+    uses: quotidian-ennui/workflows-olio/.github/workflows/check-pr-with-trigger.yml@main
+    secrets: inherit
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
