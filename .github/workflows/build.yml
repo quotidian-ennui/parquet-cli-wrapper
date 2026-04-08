@@ -8,7 +8,6 @@ on:
       - ".github/workflows/updatecli.yml"
       - ".github/workflows/release.yml"
       - ".github/workflows/dependabot-merge.yml"
-      - ".github/workflows/build.yml"
       - ".github/dependabot.yml"
   pull_request:
     branches:
@@ -38,11 +37,10 @@ jobs:
           java-version: "11"
           check-latest: false
       - name: Install Just
-        uses: taiki-e/install-action@94cb46f8d6e437890146ffbd78a778b78e623fb2 # v2.74.0
+        uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
         with:
-          tool: just@${{ env.JUST_VERSION }}
-      ## Since we're wrapping maven there is no pom file which
-      ## means that setup-java fails if you add a cache: "maven"
+          repo: casey/just
+          tag: ${{ env.JUST_VERSION }}
       - name: Maven Cache
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
