@@ -23,9 +23,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install Just
-        uses: taiki-e/install-action@85b24a67ef0c632dfefad70b9d5ce8fddb040754 # v2.75.10
+        uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
         with:
-          tool: just@${{ env.JUST_VERSION }}
+          repo: casey/just
+          tag: ${{ env.JUST_VERSION }}
       - name: Generate changelog
         uses: orhun/git-cliff-action@c93ef52f3d0ddcdcc9bd5447d98d458a11cd4f72 # v4.7.1
         id: changelog
