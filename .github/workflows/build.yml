@@ -12,9 +12,11 @@ on:
   pull_request:
     branches:
       - main
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 env:
   JUST_VERSION: 1.49.0
 
@@ -41,8 +43,22 @@ jobs:
         with:
           repo: casey/just
           tag: ${{ env.JUST_VERSION }}
-      - name: Maven Cache
+      - name: Install Maven Cleanup Tool
+        uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
+        with:
+          repo: hpehl/mcup
+      - name: Maven RO Cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        if: github.event_name == 'pull_request'
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}-${{ hashFiles('.env') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}
+            ${{ runner.os }}-maven-cache-
+      - name: Maven RW Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        if: github.event_name != 'pull_request'
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-cache-${{ hashFiles('Justfile') }}-${{ hashFiles('.env') }}
@@ -52,3 +68,4 @@ jobs:
       - name: Build & Test
         run: |
           just build test
+          mcup --versions '3..' keep
