@@ -17,9 +17,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  JUST_VERSION: 1.55.1
-
 permissions: {}
 
 jobs:
@@ -42,7 +39,6 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
         with:
           repo: casey/just
-          tag: ${{ env.JUST_VERSION }}
       - name: Install Maven Cleanup Tool
         uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
         with:
