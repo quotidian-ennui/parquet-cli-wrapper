@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  JUST_VERSION: 1.55.1
+  JUST_VERSION: 1.56.0
 
 permissions: {}
 
