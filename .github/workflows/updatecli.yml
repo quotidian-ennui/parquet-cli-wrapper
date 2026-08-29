@@ -28,6 +28,6 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: "${{ github.event.repository.name}}"
       - name: updatecli
-        uses: quotidian-ennui/actions-olio/default-updatecli@6a111ea6a684e2d74c811079ebbb6c923da85796 # v1.3.3
+        uses: quotidian-ennui/actions-olio/default-updatecli@03ea351ebcd69c199efa11e7b2b10ab2cd7f8158 # v1.3.4
         with:
           token: ${{ steps.app-token.outputs.token }}
