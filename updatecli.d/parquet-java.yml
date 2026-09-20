@@ -36,6 +36,8 @@ sources:
     kind: githubrelease
     name: parquet-java latest release
     spec:
+      age:
+        minimum: 2d
       owner: apache
       repository: parquet-java
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
