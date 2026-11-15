@@ -52,13 +52,13 @@ jobs:
       - name: Build distribution
         id: build
         run: |
-          echo "release_name=$(echo "${GITHUB_REF#refs/tags/}" | tr / -)" >> "$GITHUB_OUTPUT"
           just bundle
-      - name: Upload the binary releases
-        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
+      - name: Create Release
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
-          file: build/parquet-cli.tar.gz
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          release_name: ${{ steps.build.outputs.release_name }}
-          body: ${{ steps.changelog.outputs.content }}
+          artifacts: "build/parquet-cli.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: ${{ steps.changelog.outputs.changelog }}
+          immutableCreate: true
+          artifactErrorsFailBuild: true
+          makeLatest: true
